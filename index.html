@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>A Message From My Heart ❤️</title>
+    <title>A Message For You ❤️</title>
     <style>
         body {
             margin: 0;
@@ -13,7 +13,7 @@
             align-items: center;
             justify-content: center;
             background: #fff0f3;
-            font-family: 'Georgia', serif; /* More romantic font */
+            font-family: 'Georgia', serif;
             overflow: hidden;
             text-align: center;
             touch-action: none;
@@ -24,12 +24,13 @@
             font-size: 1.8rem; 
             padding: 0 20px;
             margin-bottom: 30px;
+            z-index: 10;
         }
 
         .btn-container {
             position: relative;
             width: 100%;
-            height: 300px;
+            height: 400px;
         }
 
         button {
@@ -40,14 +41,28 @@
             border-radius: 50px;
             cursor: pointer;
             position: absolute;
-            transition: transform 0.15s ease-out;
+            transition: transform 0.1s ease-out;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; left: 50%; top: 50%; transform: translate(-120%, -50%); z-index: 100; }
-        #noBtn { background-color: white; color: #ff4d6d; left: 50%; top: 50%; transform: translate(20%, -50%); z-index: 100; }
+        #yesBtn { 
+            background-color: #ff4d6d; 
+            color: white; 
+            left: 50%; 
+            top: 50%; 
+            transform: translate(-120%, -50%); 
+            z-index: 50; /* Stays below NO button for dodging */
+        }
 
-        /* The Romantic Landing Page */
+        #noBtn { 
+            background-color: white; 
+            color: #ff4d6d; 
+            left: 50%; 
+            top: 50%; 
+            transform: translate(20%, -50%); 
+            z-index: 100;
+        }
+
         #success {
             display: none;
             position: fixed;
@@ -57,13 +72,12 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            overflow-y: auto; /* Allows scrolling if message is long */
             padding: 30px;
         }
 
         .romantic-message {
             color: #d63384;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             line-height: 1.6;
             background: white;
             padding: 25px;
@@ -102,7 +116,7 @@
             Since the first time I saw you back in 9th grade, my heart has always belonged to you. ✨<br><br>
             To this day, I’m still just as crazy about you as I was then. I know I haven’t always shared my feelings, and I understand if you don't feel the same way...<br><br>
             But I made this just to bring a smile to your face. Because at the end of the day, your happiness is all that matters to me. ❤️<br><br>
-            <strong>I can't wait to see you!</strong>
+            <strong>Hope to meet you soon!</strong>
         </div>
     </div>
 
@@ -113,21 +127,32 @@
         let yesScale = 1;
 
         function moveButton() {
-            const padding = 80;
+            // Dodge logic
+            const padding = 100;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+            
             const x = Math.max(padding, Math.random() * maxX);
             const y = Math.max(padding, Math.random() * maxY);
+            
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
             noBtn.style.transform = 'none';
 
-            yesScale += 0.2; 
-            yesBtn.style.transform = `translate(-110%, -50%) scale(${yesScale})`;
+            // Grow logic - capped at screen width
+            const maxScale = window.innerWidth / yesBtn.offsetWidth;
+            if (yesScale < maxScale) {
+                yesScale += 0.2; 
+                yesBtn.style.transform = `translate(-110%, -50%) scale(${yesScale})`;
+            }
         }
 
+        // Keep dodging forever
         noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
 
         yesBtn.addEventListener('click', () => {
             successDiv.style.display = 'flex';
