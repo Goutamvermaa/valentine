@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For You ❤️</title>
+    <title>A Special Message ❤️</title>
     <style>
         body {
             margin: 0;
@@ -15,30 +15,23 @@
             background: #fff0f3;
             font-family: 'Arial', sans-serif;
             overflow: hidden;
-            touch-action: none;
             text-align: center;
         }
 
-        /* Background hearts */
-        .heart {
-            position: fixed;
-            top: -10px;
-            color: #ff4d6d;
-            font-size: 20px;
-            z-index: 0;
-            animation: fall linear forwards;
+        .gif-container img {
+            width: 230px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
-        @keyframes fall {
-            to { transform: translateY(105vh) rotate(360deg); }
-        }
-
-        h1 { color: #ff4d6d; font-size: 2rem; z-index: 10; position: relative; }
+        h1 { color: #ff4d6d; font-size: 1.8rem; padding: 0 20px; }
 
         .btn-container {
             position: relative;
             width: 100%;
-            height: 50vh;
+            height: 300px;
+            margin-top: 20px;
         }
 
         button {
@@ -49,12 +42,26 @@
             border-radius: 50px;
             cursor: pointer;
             position: absolute;
-            transition: transform 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease;
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; left: 50%; top: 50%; transform: translate(-120%, -50%); z-index: 20; }
-        #noBtn { background-color: white; color: #ff4d6d; left: 50%; top: 50%; transform: translate(20%, -50%); z-index: 20; }
+        #yesBtn { 
+            background-color: #ff4d6d; 
+            color: white; 
+            left: 50%; 
+            top: 50%; 
+            transform: translate(-120%, -50%); 
+            z-index: 100;
+        }
+
+        #noBtn { 
+            background-color: white; 
+            color: #ff4d6d; 
+            left: 50%; 
+            top: 50%; 
+            transform: translate(20%, -50%); 
+            z-index: 100;
+        }
 
         #success {
             display: none;
@@ -64,29 +71,22 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 1000;
         }
 
-        /* Reliable Mountain Image */
-        .mountain-img {
-            width: 90%;
-            max-width: 400px;
+        .final-gif {
+            width: 80%;
+            max-width: 350px;
             border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .celebration-text {
-            color: #ff4d6d;
-            font-size: 2rem;
-            font-weight: bold;
-            padding: 0 20px;
         }
     </style>
 </head>
 <body>
 
     <div id="main-ui">
+        <div class="gif-container">
+            <img src="https://media.tenor.com/On7kd0656-MAAAAi/cat-puss-in-boots.gif" alt="Please cat">
+        </div>
         <h1>Will you be my Valentine? 🌹</h1>
         <div class="btn-container">
             <button id="yesBtn">YES</button>
@@ -95,45 +95,44 @@
     </div>
 
     <div id="success">
-        <img class="mountain-img" src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80" alt="Celebration">
-        <div class="celebration-text">I can't wait to see you! ❤️</div>
+        <img class="final-gif" src="https://media.tenor.com/9v_Ksh_3y-oAAAAM/success-kid.gif" alt="Success Kid">
+        <h1 style="color: #ff4d6d; margin-top: 20px;">I can't wait to see you! ❤️</h1>
     </div>
 
     <script>
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
+        const successDiv = document.getElementById('success');
         let yesScale = 1;
 
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
-        }
-        setInterval(createHeart, 300);
+        function moveButton() {
+            // Screen boundaries
+            const padding = 80;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-        function handleNo() {
-            const padding = 100;
-            const x = Math.max(padding, Math.random() * (window.innerWidth - padding));
-            const y = Math.max(padding, Math.random() * (window.innerHeight - padding));
+            // Random position
+            const x = Math.max(padding, Math.random() * maxX);
+            const y = Math.max(padding, Math.random() * maxY);
+
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
             noBtn.style.transform = 'none';
 
-            yesScale += 0.2;
+            // Make Yes Button Grow
+            yesScale += 0.2; // 20% bigger each miss
             yesBtn.style.transform = `translate(-110%, -50%) scale(${yesScale})`;
         }
 
-        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleNo(); });
-        noBtn.addEventListener('mouseover', handleNo);
+        // Mouse for laptop, Touch for phone
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
 
         yesBtn.addEventListener('click', () => {
-            document.getElementById('success').style.display = 'flex';
-            // Start extra hearts for firework effect
-            for(let i=0; i<20; i++) setTimeout(createHeart, i*100);
+            successDiv.style.display = 'flex';
         });
     </script>
 </body>
